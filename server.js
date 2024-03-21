@@ -46,7 +46,6 @@ console.log(process.env.PORT)
 console.log(process.env.FRONTEND_URL)
 console.log(process.env.AZURE_POSTGRESQL_9DBA8_DATABASE)
 
-
 app.use(
   session({
     secret: 'your-secret-key',
@@ -56,6 +55,7 @@ app.use(
       httpOnly: true, // Important for security
       secure: process.env.ENVIRONMENT === 'production' ? true : false, // Set to true in production with HTTPS
       maxAge: 1000 * 60 * 60 * 24,
+      sameSite: process.env.ENVIRONMENT === 'production' ? 'none' : 'lax'
     }
   })
 )
@@ -118,7 +118,7 @@ app.get(
 )
 
 function ensureAuthenticated (req, res, next) {
-  console.log("in the ensureAuth loop")
+  console.log('in the ensureAuth loop')
   if (req.isAuthenticated()) {
     return next()
   } else {
@@ -150,7 +150,7 @@ app.get('/auth/check', (req, res) => {
 //create a route that takes the session
 //and returns the user's role, their team id and their userId
 app.get('/user', (req, res) => {
-  console.log(req);
+  console.log(req)
   if (req.isAuthenticated()) {
     if (req.user.role === 'admin' || req.user.role === 'team_leader') {
       req.user.isTeamLeader = true
