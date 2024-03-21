@@ -55,7 +55,7 @@ app.use(
     cookie: {
       httpOnly: true, // Important for security
       secure: process.env.ENVIRONMENT === 'production' ? true : false, // Set to true in production with HTTPS
-      maxAge: 1000 * 60 * 60 * 24 // Example: 1-day long session
+      maxAge: 1000 * 60 * 60 * 24,
     }
   })
 )
@@ -118,6 +118,7 @@ app.get(
 )
 
 function ensureAuthenticated (req, res, next) {
+  console.log("in the ensureAuth loop")
   if (req.isAuthenticated()) {
     return next()
   } else {
@@ -149,6 +150,7 @@ app.get('/auth/check', (req, res) => {
 //create a route that takes the session
 //and returns the user's role, their team id and their userId
 app.get('/user', (req, res) => {
+  console.log(req);
   if (req.isAuthenticated()) {
     if (req.user.role === 'admin' || req.user.role === 'team_leader') {
       req.user.isTeamLeader = true
