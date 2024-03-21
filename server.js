@@ -26,7 +26,10 @@ const dashboardDataRouter = require('./routes/dashboardData')
 const Knex = require('knex')
 const knexfile = require('./knexfile')
 const { Model, knexSnakeCaseMappers } = require('objection')
-const knex = Knex({ ...knexfile.development, ...knexSnakeCaseMappers() })
+const knex = Knex({
+  ...knexfile[process.env.ENVIRONMENT],
+  ...knexSnakeCaseMappers()
+})
 Model.knex(knex)
 
 //initiate
@@ -34,8 +37,8 @@ const app = express()
 app.use(bodyParser.json())
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // specify the exact origin
-    credentials: true // allow credentials
+    // origin: process.env.FRONTEND_URL, // specify the exact origin
+    // credentials: true // allow credentials
   })
 )
 console.log('yo freney, we got some envs, port, FE URL')

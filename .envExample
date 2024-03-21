@@ -9,3 +9,4 @@ DISCORD_CALLBACK_URL=http://localhost:8001/auth/discord/callback
 EXPRESS_SESSION_SECRET=123456
 PORT = 8001
 FRONTEND_URL=http://localhost:3000
+ENVIRONMENT=production
