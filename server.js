@@ -75,7 +75,6 @@ passport.use(
     async function (accessToken, refreshToken, profile, done) {
       try {
         let user = await User.query().findOne({ username: profile.username })
-
         if (!user) {
           user = await User.query().insert({
             username: profile.username,
@@ -83,6 +82,7 @@ passport.use(
             // add other fields as necessary
           })
         }
+        console.log(user)
 
         done(null, user)
       } catch (err) {
@@ -150,7 +150,7 @@ app.get('/auth/check', (req, res) => {
 //create a route that takes the session
 //and returns the user's role, their team id and their userId
 app.get('/user', (req, res) => {
-  console.log(req)
+  console.log(req.session)
   if (req.isAuthenticated()) {
     if (req.user.role === 'admin' || req.user.role === 'team_leader') {
       req.user.isTeamLeader = true
