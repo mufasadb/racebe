@@ -20,12 +20,12 @@ module.exports = {
   production: {
     client: 'pg',
     connection: {
-      host: process.env.AZURE_POSTGRESQL_HOST,
-      user: process.env.AZURE_POSTGRESQL_USER,
-      password: process.env.AZURE_POSTGRESQL_PASSWORD,
-      database: process.env.AZURE_POSTGRESQL_DATABASE,
-      port: Number(process.env.AZURE_POSTGRESQL_PORT),
-      ssl: process.env.AZURE_POSTGRESQL_SSL
+      host: process.env.AZURE_POSTGRESQL_9DBA8_HOST,
+      user: process.env.AZURE_POSTGRESQL_9DBA8_USER,
+      password: process.env.AZURE_POSTGRESQL_9DBA8_PASSWORD,
+      database: process.env.AZURE_POSTGRESQL_9DBA8_DATABASE,
+      port: Number(process.env.AZURE_POSTGRESQL_9DBA8_PORT),
+      ssl: process.env.AZURE_POSTGRESQL_9DBA8_SSL
     }
   }
 }
