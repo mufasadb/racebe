@@ -38,7 +38,10 @@ app.use(
     credentials: true // allow credentials
   })
 )
-
+console.log('yo freney, we got some envs, port, FE URL')
+console.log(process.env.PORT)
+console.log(process.env.FRONTEND_URL)
+console
 app.use(
   session({
     secret: 'your-secret-key',
@@ -195,6 +198,7 @@ app.use((err, req, res, next) => {
   }
   res.status(err.status || 500)
   res.json({ error: err.message })
+  console.log(err)
 })
 // Start the server
 const PORT = process.env.PORT || 8001
