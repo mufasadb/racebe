@@ -45,6 +45,8 @@ console.log('yo freney, we got some envs, port, FE URL')
 console.log(process.env.PORT)
 console.log(process.env.FRONTEND_URL)
 console.log(process.env.AZURE_POSTGRESQL_9DBA8_DATABASE)
+
+letUse
 app.use(
   session({
     secret: 'your-secret-key',
@@ -52,7 +54,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true, // Important for security
-      secure: false, // Set to true in production with HTTPS
+      secure: process.env.ENVIRONMENT === 'production' ? true : false, // Set to true in production with HTTPS
       maxAge: 1000 * 60 * 60 * 24 // Example: 1-day long session
     }
   })
