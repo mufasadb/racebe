@@ -46,7 +46,7 @@ console.log(process.env.PORT)
 console.log(process.env.FRONTEND_URL)
 console.log(process.env.AZURE_POSTGRESQL_9DBA8_DATABASE)
 
-letUse
+
 app.use(
   session({
     secret: 'your-secret-key',
