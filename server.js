@@ -37,8 +37,8 @@ const app = express()
 app.use(bodyParser.json())
 app.use(
   cors({
-    // origin: process.env.FRONTEND_URL, // specify the exact origin
-    // credentials: true // allow credentials
+    origin: process.env.FRONTEND_URL, // specify the exact origin
+    credentials: true // allow credentials
   })
 )
 console.log('yo freney, we got some envs, port, FE URL')
