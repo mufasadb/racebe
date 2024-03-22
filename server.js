@@ -47,18 +47,23 @@ console.log(process.env.PORT)
 console.log(process.env.FRONTEND_URL)
 console.log(process.env.AZURE_POSTGRESQL_9DBA8_DATABASE)
 
+const cookie = {
+  httpOnly: true, // Important for security
+  secure: process.env.ENVIRONMENT === 'production' ? true : false,
+  maxAge: 1000 * 60 * 60 * 24,
+  domain:
+    process.env.ENVIRONMENT === 'production' ? '.ace-olympics.net' : 'localhost'
+}
+if (process.env.ENVIRONMENT === 'production') {
+  cookie.sameSite = 'None'
+}
+
 app.use(
   session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      httpOnly: true, // Important for security
-      secure: true,
-      maxAge: 1000 * 60 * 60 * 24,
-      sameSite: 'None',
-      domain: '.ace-olympics.net'
-    }
+    cookie: cookie
   })
 )
 
