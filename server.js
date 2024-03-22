@@ -42,11 +42,6 @@ app.use(
     credentials: true // allow credentials
   })
 )
-console.log('yo freney, we got some envs, port, FE URL')
-console.log(process.env.PORT)
-console.log(process.env.FRONTEND_URL)
-console.log(process.env.AZURE_POSTGRESQL_9DBA8_DATABASE)
-
 const cookie = {
   httpOnly: true, // Important for security
   secure: process.env.ENVIRONMENT === 'production' ? true : false,
@@ -147,9 +142,9 @@ function ensureRole (role) {
 }
 
 app.get('/auth/check', (req, res) => {
-  console.log('authing someone')
+  // console.log('authing someone')
   if (req.isAuthenticated()) {
-    console.log("auth'd")
+    // console.log("auth'd")
     res.send(true)
   } else {
     console.log('not authed')
@@ -159,9 +154,9 @@ app.get('/auth/check', (req, res) => {
 //create a route that takes the session
 //and returns the user's role, their team id and their userId
 app.get('/user', (req, res) => {
-  console.log(req.session)
+  // console.log(req.session)
   if (req.isAuthenticated()) {
-    console.log('got into isAuthenticated')
+    // console.log('got into isAuthenticated')
     if (req.user.role === 'admin' || req.user.role === 'team_leader') {
       req.user.isTeamLeader = true
     }
