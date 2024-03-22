@@ -22,7 +22,7 @@ router.get('/:id', getScoringEvent, (req, res) => {
 
 // Create scoringEvent
 router.post('/', async (req, res) => {
-  if(req.body.scoreableObjectId === null){
+  if(req.body.scoreable_object_id === null){
     return res.status(400).json({ message: 'Scoreable Object ID is required' })
   }
   console.log('tried to make an eveent)')
@@ -37,10 +37,8 @@ router.post('/', async (req, res) => {
   // make sure that there isn't already a scoring event for that scoreable object
 
   const scoreableObject = await ScoreableObject.query().findById(
-    req.body.scoreableObjectId
+    req.body.scoreable_object_id
   )
-  console.log(req.body)
-  console.log(scoreableObject)
 
   const user = await User.query().findById(req.body.user_id)
   const team = await Team.query().findById(req.body.team_id)
