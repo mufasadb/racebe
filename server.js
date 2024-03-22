@@ -43,8 +43,10 @@ app.use(
 )
 console.log('yo freney, we got some envs, port, FE URL')
 console.log(process.env.PORT)
-console.log(process.env.FRONTEND_URL)
+console.log(process.env.FRONTEND_URL)x
 console.log(process.env.AZURE_POSTGRESQL_9DBA8_DATABASE)
+
+
 
 app.use(
   session({
@@ -53,9 +55,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true, // Important for security
-      secure: true,
+      secure: false,
       maxAge: 1000 * 60 * 60 * 24,
-      sameSite: 'lax',
+      sameSite: 'None',
       domain: 'ace-olympics.net'
     }
   })
@@ -114,6 +116,7 @@ app.get(
   '/auth/discord/callback',
   passport.authenticate('discord', { failureRedirect: '/login' }),
   function (req, res) {
+    console.log("user authenticated")
     res.redirect(`${process.env.FRONTEND_URL}/`)
   }
 )
@@ -142,6 +145,7 @@ function ensureRole (role) {
 app.get('/auth/check', (req, res) => {
   console.log('authing someone')
   if (req.isAuthenticated()) {
+    console.log("auth'd")
     res.send(true)
   } else {
     console.log('not authed')
@@ -153,11 +157,13 @@ app.get('/auth/check', (req, res) => {
 app.get('/user', (req, res) => {
   console.log(req.session)
   if (req.isAuthenticated()) {
+    console.log("got into isAuthenticated")
     if (req.user.role === 'admin' || req.user.role === 'team_leader') {
       req.user.isTeamLeader = true
     }
     res.send(req.user)
   } else {
+
     //return a 401
     res.status(401).send('You are not authenticated')
   }
