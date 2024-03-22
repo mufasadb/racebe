@@ -22,10 +22,10 @@ router.get('/:id', getScoringEvent, (req, res) => {
 
 // Create scoringEvent
 router.post('/', async (req, res) => {
-  if(req.body.scoreableObjectId === null){
+  if (req.body.scoreableObjectId === null) {
     return res.status(400).json({ message: 'Scoreable Object ID is required' })
   }
-  
+
   console.log('tried to make an eveent)')
 
   //when trying to make an event, check the scoreable object type
@@ -43,14 +43,20 @@ router.post('/', async (req, res) => {
   console.log(req.body)
   console.log(scoreableObject)
 
-  const user = await User.query().findById(req.body.user_id)
-  const team = await Team.query().findById(req.body.team_id)
+  let user = null
+  let team = null
+  if (req.body.userId) {
+    user = await User.query().findById(req.body.userId)
+  }
+  if (req.body.teamId) {
+    team = await Team.query().findById(req.body.teamId)
+  }
 
   if (
     scoreableObject.submittableType !== 'league_bounty' &&
     scoreableObject.submittableType !== 'team_bounty'
   ) {
-    if (req.body.user_id === null) {
+    if (req.body.userId === null) {
       return res
         .status(400)
         .json({ message: 'User ID is required for this type of scoring event' })
@@ -70,7 +76,7 @@ router.post('/', async (req, res) => {
   if (scoreableObject.submittableType === 'player_bounty') {
     const scoringEvents = await ScoringEvent.query().where(
       'user_id',
-      req.body.user_id
+      req.body.userId
     )
     const existingBounty = scoringEvents.find(
       event => event.scoreableObjectId === req.body.scoreableObjectId
@@ -161,7 +167,7 @@ router.get('/approveable/list', async (req, res) => {
     const scoringEvents = await ScoringEvent.query()
       .where('is_approved', false)
       .withGraphFetched('[scoreableObject,league, user,team]')
-      console.log(scoringEvents)
+    console.log(scoringEvents)
     res.json(scoringEvents)
   } catch (err) {
     res.status(500).json({ message: err.message })
