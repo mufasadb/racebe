@@ -22,6 +22,10 @@ router.get('/:id', getScoringEvent, (req, res) => {
 
 // Create scoringEvent
 router.post('/', async (req, res) => {
+  if(req.body.scoreableObjectId === null){
+    return res.status(400).json({ message: 'Scoreable Object ID is required' })
+  }
+  
   console.log('tried to make an eveent)')
 
   //when trying to make an event, check the scoreable object type
