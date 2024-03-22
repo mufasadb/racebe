@@ -58,7 +58,7 @@ app.use(
       secure: true,
       maxAge: 1000 * 60 * 60 * 24,
       sameSite: 'None',
-      domain: 'ace-olympics.net'
+      domain: '.ace-olympics.net'
     }
   })
 )
