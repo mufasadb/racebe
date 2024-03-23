@@ -68,7 +68,7 @@ router.get('/team-comparison', async (req, res) => {
           ? scoreEvent.scoreableObject.points *
             scoreEvent.league.scoreMultiplier
           : scoreEvent.scoreableObject.points
-          console.lot(teamData.totalPoints);
+          console.log(teamData.totalPoints);
         teamData.totalScoringEvents++
         if (scoreEvent.isBounty) {
           teamData.bountiesClaimed++
