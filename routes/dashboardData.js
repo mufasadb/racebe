@@ -62,10 +62,13 @@ router.get('/team-comparison', async (req, res) => {
     }
     for (const scoreEvent of scoringEvents) {
       if (scoreEvent.teamId === team.id) {
+        console.log(team.name)
+        console.log(scoreEvent)
         teamData.totalPoints += scoreEvent.scoreableObject.leagueMultiplyer
           ? scoreEvent.scoreableObject.points *
             scoreEvent.league.scoreMultiplier
           : scoreEvent.scoreableObject.points
+          console.lot(teamData.totalPoints);
         teamData.totalScoringEvents++
         if (scoreEvent.isBounty) {
           teamData.bountiesClaimed++
