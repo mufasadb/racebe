@@ -5,10 +5,14 @@ const ScoringEvents = require('../models/scoringEvent.js')
 
 // Get all scoreableObjects
 router.get('/', async (req, res) => {
-  console.log('hit the / all endpoint')
+  console.log('hit the / SObjects endpoint')
   try {
     const scoreableObjects = await ScoreableObject.query()
-    res.json(scoreableObjects)
+
+    const sortedBounties = scoreableObjects.sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
+    res.json(sortedBounties)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
@@ -16,7 +20,7 @@ router.get('/', async (req, res) => {
 
 // Get scoreableObject by ID
 router.get('/:id', getScoreableObject, (req, res) => {
-  console.log('hit the /id endpoint')
+  console.log('hit the /id SObjects  endpoint')
   res.json(res.scoreableObject)
 })
 
@@ -79,7 +83,10 @@ router.get('/user/:id', async (req, res) => {
       'user_id',
       req.params.id
     )
-    res.json(scoreableObjects)
+    const sortedBounties = scoreableObjects.sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
+    res.json(sortedBounties)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
@@ -99,17 +106,17 @@ router.get('/available/league-bounties', async (req, res) => {
         scoringEvent => scoringEvent.scoreableObjectId !== scoreableObject.id
       )
     })
-    res.json(availableBounties)
+    //sort by sortOrder
+    const sortedBounties = availableBounties.sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
+    res.json(sortedBounties)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
 })
 //scoreable team bounties remaining for this team
 router.get('/available/team-bounties/:id', async (req, res) => {
-  //get all scoring events
-  //get all scoreable objects whose type is team_bounty
-  //filter out any scoreabkle objects who have a scoring event with that ID
-  //return the remaining scoreable objects
   try {
     const scoringEvents = await ScoringEvents.query().where(
       'team_id',
@@ -124,7 +131,10 @@ router.get('/available/team-bounties/:id', async (req, res) => {
         scoringEvent => scoringEvent.scoreableObjectId !== scoreableObject.id
       )
     })
-    res.json(availableBounties)
+    const sortedBounties = availableBounties.sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
+    res.json(sortedBounties)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
@@ -132,25 +142,32 @@ router.get('/available/team-bounties/:id', async (req, res) => {
 
 //scoreable player bounties reamining for this player
 router.get('/available/player-bounties/:id', async (req, res) => {
-  //get all scoring events
-  //get all scoreable objects whose type is player_bounty
-  //filter out any scoreabkle objects who have a scoring event with that ID
-  //return the remaining scoreable objects
   try {
     const scoringEvents = await ScoringEvents.query().where(
       'user_id',
       req.params.id
     )
-    const scoreableObjects = await ScoreableObject.query().where(
-      'submittable_type',
-      'account_bounty'
-    )
-    const availableBounties = scoreableObjects.filter(scoreableObject => {
+
+    // get scoreable objects where submittable type is account_bounty, account_objective, or character_objective
+const scoreableObjects = await ScoreableObject.query()
+
+const filteredObjects = scoreableObjects.filter(
+  scoreableObject =>
+    scoreableObject.submittableType === 'account_bounty' ||
+    scoreableObject.submittableType === 'account_objective' ||
+    scoreableObject.submittableType === 'character_objective'
+)
+
+
+    const availableBounties = filteredObjects.filter(scoreableObject => {
       return scoringEvents.every(
         scoringEvent => scoringEvent.scoreableObjectId !== scoreableObject.id
       )
     })
-    res.json(availableBounties)
+    const sortedBounties = availableBounties.sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
+    res.json(sortedBounties)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }

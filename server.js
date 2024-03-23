@@ -121,7 +121,6 @@ app.get(
 )
 
 function ensureAuthenticated (req, res, next) {
-  console.log('in the ensureAuth loop')
   if (req.isAuthenticated()) {
     return next()
   } else {
