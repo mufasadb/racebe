@@ -62,13 +62,15 @@ router.get('/team-comparison', async (req, res) => {
     }
     for (const scoreEvent of scoringEvents) {
       if (scoreEvent.teamId === team.id) {
-        console.log(team.name)
-        console.log(scoreEvent)
+        console.log(`new scoring event ---- for ${team.name}`)
+        console.log(
+          `event${scoreEvent.name}, leageMUlti ${scoreEvent.scoreableObject.leagueMultiplyer}, points ${scoreEvent.scoreableObject.points}, leagueMult ${scoreEvent.league.scoreMultiplier}`
+        )
         teamData.totalPoints += scoreEvent.scoreableObject.leagueMultiplyer
           ? scoreEvent.scoreableObject.points *
             scoreEvent.league.scoreMultiplier
           : scoreEvent.scoreableObject.points
-          console.log(teamData.totalPoints);
+        console.log(`new total points ${teamData.totalPoints}`)
         teamData.totalScoringEvents++
         if (scoreEvent.isBounty) {
           teamData.bountiesClaimed++
@@ -96,7 +98,7 @@ router.get('/team-comparison', async (req, res) => {
 })
 
 router.get('/leader-board', async (req, res) => {
-  console.log("fetching leaderboard")
+  console.log('fetching leaderboard')
   const users = await User.query()
   const scoringEvents = await ScoringEvent.query()
     .where('is_approved', true)
