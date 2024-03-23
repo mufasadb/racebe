@@ -47,6 +47,14 @@ router.post('/:id/assign_team', getUser, async (req, res) => {
 // Update user
 router.patch('/:id', getUser, async (req, res) => {
   console.log('trying to update a user')
+  //check if the team ID changed, if it did, go through each of the scoreevents and update them to the new Team ID
+  const oldUser = await User.query().findById(req.params.id)
+  if (oldUser.team_id !== req.body.team_id) {
+    const scoringEvents = await oldUser.$relatedQuery('scoringEvents')
+    for (const event of scoringEvents) {
+      await event.$query().patch({ team_id: req.body.team_id })
+    }
+  }
   try {
     const updatedUser = await res.user.$query().patch(req.body)
     res.json(updatedUser)
