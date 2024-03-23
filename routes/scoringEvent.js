@@ -8,7 +8,9 @@ const Team = require('../models/team.js')
 // Get all scoringEvents
 router.get('/', async (req, res) => {
   try {
-    const scoringEvents = await ScoringEvent.query()
+    const scoringEvents = await ScoringEvent.query().withGraphFetched(
+      '[scoreableObject,league, user, team]'
+    )
     res.json(scoringEvents)
   } catch (err) {
     res.status(500).json({ message: err.message })
@@ -22,7 +24,7 @@ router.get('/:id', getScoringEvent, (req, res) => {
 
 // Create scoringEvent
 router.post('/', async (req, res) => {
-  if(req.body.scoreable_object_id === null){
+  if (req.body.scoreable_object_id === null) {
     return res.status(400).json({ message: 'Scoreable Object ID is required' })
   }
   console.log('tried to make an eveent)')
@@ -39,9 +41,27 @@ router.post('/', async (req, res) => {
   const scoreableObject = await ScoreableObject.query().findById(
     req.body.scoreable_object_id
   )
+  try {
+    let user, team
 
-  const user = await User.query().findById(req.body.user_id)
-  const team = await Team.query().findById(req.body.team_id)
+    if (req.body.user_id) {
+      user = await User.query().findById(req.body.user_id)
+    } else {
+      throw new Error('No user_id provided')
+    }
+
+    if (req.body.team_id) {
+      team = await Team.query().findById(req.body.team_id)
+    } else {
+      throw new Error('No team_id provided')
+    }
+
+    // Proceed with your logic, now that user and team are defined
+    // ...
+  } catch (error) {
+    // Handle the error, which could be due to missing IDs or a database issue
+    res.status(400).json({ error: error.message })
+  }
 
   if (
     scoreableObject.submittableType !== 'league_bounty' &&
@@ -130,10 +150,20 @@ router.get('/by-user/:id', async (req, res) => {
     res.status(400).json({ message: 'User ID is required' })
   }
   try {
-    const scoringEvents = await ScoringEvent.query()
+    // fetch all scoring events for a user where the user_id matches the id in the request
+    let scoringEvents = await ScoringEvent.query()
       .where('user_id', req.params.id)
-      .withGraphFetched('[scoreableObject,league]')
+      .withGraphFetched('[scoreableObject,league, user, team]')
 
+    // filter out events where scorableObject's Type is not team_bounty or team_objective
+    scoringEvents = scoringEvents.filter(event => {
+      return (
+        event.scoreableObject.submittableType !== 'team_bounty' &&
+        event.scoreableObject.submittableType !== 'team_objective'
+      )
+    })
+
+    console.log(scoringEvents)
     res.json(scoringEvents)
   } catch (err) {
     console.log(err)
@@ -158,7 +188,7 @@ router.get('/approveable/list', async (req, res) => {
     const scoringEvents = await ScoringEvent.query()
       .where('is_approved', false)
       .withGraphFetched('[scoreableObject,league, user,team]')
-      console.log(scoringEvents)
+    console.log(scoringEvents)
     res.json(scoringEvents)
   } catch (err) {
     res.status(500).json({ message: err.message })

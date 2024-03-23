@@ -66,6 +66,12 @@ router.patch('/:id', getUser, async (req, res) => {
 
 // Delete user
 router.delete('/:id', getUser, async (req, res) => {
+  //delete all score events attached to that user
+  const scoringEvents = await res.user.$relatedQuery('scoringEvents')
+  for (const event of scoringEvents) {
+    await event.$query().delete()
+  }
+
   try {
     await res.user.$query().delete()
     res.json({ message: 'Deleted User' })

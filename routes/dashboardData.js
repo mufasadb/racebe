@@ -32,7 +32,7 @@ router.get('/team-comparison', async (req, res) => {
     // )
     const scoreableObject = event.scoreableObject
     if (
-      scoreableObject.submittableType === 'player_bounty' ||
+      // scoreableObject.submittableType === 'player_bounty' ||
       scoreableObject.submittableType === 'team_bounty' ||
       scoreableObject.submittableType === 'server_bounty'
     ) {
