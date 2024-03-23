@@ -34,7 +34,7 @@ router.get('/team-comparison', async (req, res) => {
     if (
       // scoreableObject.submittableType === 'player_bounty' ||
       scoreableObject.submittableType === 'team_bounty' ||
-      scoreableObject.submittableType === 'server_bounty'
+      scoreableObject.submittableType === 'account_bounty'
     ) {
       event.isBounty = true
     } else {

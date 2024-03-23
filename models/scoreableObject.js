@@ -30,11 +30,11 @@ class ScoreableObject extends Model {
         submittable_type: {
           type: 'string',
           enum: [
-            'character',
-            'player',
-            'player_bounty',
+            'account_objective',
+            'character_bounty',
+            'account_bounty',
             'team_bounty',
-            'server_bounty'
+            'team_objective'
           ]
         }
       }

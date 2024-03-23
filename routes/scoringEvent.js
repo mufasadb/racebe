@@ -84,7 +84,7 @@ router.post('/', async (req, res) => {
     }
   }
   //if its a player bounty, check that the player doesnt already have a bounty by this scoreable object
-  if (scoreableObject.submittableType === 'player_bounty') {
+  if (scoreableObject.submittableType === 'account_objective') {
     const scoringEvents = await ScoringEvent.query().where(
       'user_id',
       req.body.user_id
@@ -163,7 +163,6 @@ router.get('/by-user/:id', async (req, res) => {
       )
     })
 
-    console.log(scoringEvents)
     res.json(scoringEvents)
   } catch (err) {
     console.log(err)
@@ -171,12 +170,19 @@ router.get('/by-user/:id', async (req, res) => {
   }
 })
 
-router.get('/team/:id', async (req, res) => {
+router.get('/by-team/:id', async (req, res) => {
   try {
-    const scoringEvents = await ScoringEvent.query().where(
-      'team_id',
-      req.params.id
-    )
+    let scoringEvents = await ScoringEvent.query()
+      .where('team_id', req.params.id)
+      .withGraphFetched('[scoreableObject,league, user, team]')
+    scoringEvents = scoringEvents.filter(event => {
+      return (
+        event.scoreableObject.submittableType !== 'account_bounty' &&
+        event.scoreableObject.submittableType !== 'account_objective' &&
+        event.scoreableObject.submittableType !== 'character_objective'
+      )
+    })
+
     res.json(scoringEvents)
   } catch (err) {
     res.status(500).json({ message: err.message })

@@ -92,7 +92,7 @@ router.get('/available/league-bounties', async (req, res) => {
     const scoringEvents = await ScoringEvents.query()
     const scoreableObjects = await ScoreableObject.query().where(
       'submittable_type',
-      'server_bounty'
+      'player_bounty'
     )
     const availableBounties = scoreableObjects.filter(scoreableObject => {
       return scoringEvents.every(
@@ -143,7 +143,7 @@ router.get('/available/player-bounties/:id', async (req, res) => {
     )
     const scoreableObjects = await ScoreableObject.query().where(
       'submittable_type',
-      'player_bounty'
+      'account_bounty'
     )
     const availableBounties = scoreableObjects.filter(scoreableObject => {
       return scoringEvents.every(
