@@ -23,6 +23,7 @@ router.get('/team-comparison', async (req, res) => {
   const scoringEvents = await ScoringEvent.query()
     .where('is_approved', true)
     .withGraphFetched('[scoreableObject,league]')
+  console.log(scoringEvents.count())
   const users = await User.query()
   for (const event of scoringEvents) {
     // console.log(event)
