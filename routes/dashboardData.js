@@ -64,9 +64,9 @@ router.get('/team-comparison', async (req, res) => {
       if (scoreEvent.teamId === team.id) {
         console.log(`new scoring event ---- for ${team.name}`)
         console.log(
-          `event${scoreEvent.name}, leageMUlti ${scoreEvent.scoreableObject.leagueMultiplyer}, points ${scoreEvent.scoreableObject.points}, leagueMult ${scoreEvent.league.scoreMultiplier}`
+          `event${scoreEvent.name}, leageMUlti ${scoreEvent.scoreableObject.leagueMultiplier}, points ${scoreEvent.scoreableObject.points}, leagueMult ${scoreEvent.league.scoreMultiplier}`
         )
-        teamData.totalPoints += scoreEvent.scoreableObject.leagueMultiplyer
+        teamData.totalPoints += scoreEvent.scoreableObject.leagueMultiplier
           ? scoreEvent.scoreableObject.points *
             scoreEvent.league.scoreMultiplier
           : scoreEvent.scoreableObject.points
@@ -112,7 +112,7 @@ router.get('/leader-board', async (req, res) => {
     for (const scoreEvent of scoringEvents) {
       // console.log(scoreEvent)
       if (scoreEvent.userId === user.id) {
-        score += scoreEvent.scoreableObject.leagueMultiplyer
+        score += scoreEvent.scoreableObject.leagueMultiplier
           ? scoreEvent.scoreableObject.points *
             scoreEvent.league.scoreMultiplier
           : scoreEvent.scoreableObject.points
