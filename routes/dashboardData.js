@@ -136,4 +136,22 @@ router.get('/leader-board', async (req, res) => {
   res.json(userScores)
 })
 
+router.get('/bounty-completion', async (req, res) => {
+  const scoringEvents = await ScoringEvent.query()
+    .where('is_approved', true)
+    .withGraphFetched('[league, user, team, scoreableObject]')
+
+  const bounties = scoringEvents.filter(event => {
+    return (
+      event.scoreableObject.submittableType === 'player_bounty' ||
+      event.scoreableObject.submittableType === 'team_bounty' ||
+      event.scoreableObject.submittableType === 'account_bounty'
+    )
+  })
+  bounties.sort((a, b) => {
+    return b.createdAt - a.createdAt
+  })
+  res.json(bounties)
+})
+
 module.exports = router
