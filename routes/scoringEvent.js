@@ -146,6 +146,7 @@ async function getScoringEvent (req, res, next) {
 
 //get scoringEvent list by user id
 router.get('/by-user/:id', async (req, res) => {
+  console.log(req.params)
   if (req.params.id === 'undefined') {
     res.status(400).json({ message: 'User ID is required' })
   }
@@ -171,6 +172,8 @@ router.get('/by-user/:id', async (req, res) => {
 })
 
 router.get('/by-team/:id', async (req, res) => {
+  console.log(req.params)
+
   try {
     let scoringEvents = await ScoringEvent.query()
       .where('team_id', req.params.id)

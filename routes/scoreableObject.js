@@ -96,6 +96,8 @@ router.get('/user/:id', async (req, res) => {
 
 //scoreable team bounties remaining for this team
 router.get('/available/team-bounties/:id', async (req, res) => {
+  console.log(`get team bounties by ${req.session}`)
+  console.log(req.params)
   try {
     const scoringEvents = await ScoringEvents.query().where(
       'team_id',
@@ -104,11 +106,11 @@ router.get('/available/team-bounties/:id', async (req, res) => {
     const scoreableObjects = await ScoreableObject.query()
     const filteredObjects = scoreableObjects.filter(
       scoreableObject =>
-        scoreableObject.submittableType === 'team_bounty' &&
+        scoreableObject.submittableType === 'team_bounty' ||
         scoreableObject.submittableType === 'team_objective'
     )
 
-    const availableBounties = scoreableObjects.filter(scoreableObject => {
+    const availableBounties = filteredObjects.filter(scoreableObject => {
       return scoringEvents.every(
         scoringEvent => scoringEvent.scoreableObjectId !== scoreableObject.id
       )
@@ -124,6 +126,8 @@ router.get('/available/team-bounties/:id', async (req, res) => {
 
 //scoreable player bounties reamining for this player
 router.get('/available/player-bounties/:id', async (req, res) => {
+  console.log(`get user bounties by ${req.session}`)
+  console.log(req.params)
   try {
     const scoringEvents = await ScoringEvents.query().where(
       'user_id',
@@ -135,8 +139,8 @@ router.get('/available/player-bounties/:id', async (req, res) => {
 
     const filteredObjects = scoreableObjects.filter(
       scoreableObject =>
-        scoreableObject.submittableType === 'account_bounty' &&
-        scoreableObject.submittableType === 'account_objective' &&
+        scoreableObject.submittableType === 'account_bounty' ||
+        scoreableObject.submittableType === 'account_objective' ||
         scoreableObject.submittableType === 'character_objective'
     )
 
