@@ -104,7 +104,7 @@ router.get('/available/team-bounties/:id', async (req, res) => {
     const scoreableObjects = await ScoreableObject.query()
     const filteredObjects = scoreableObjects.filter(
       scoreableObject =>
-        scoreableObject.submittableType === 'team_bounty' ||
+        scoreableObject.submittableType === 'team_bounty' &&
         scoreableObject.submittableType === 'team_objective'
     )
 
@@ -135,8 +135,8 @@ router.get('/available/player-bounties/:id', async (req, res) => {
 
     const filteredObjects = scoreableObjects.filter(
       scoreableObject =>
-        scoreableObject.submittableType === 'account_bounty' ||
-        scoreableObject.submittableType === 'account_objective' ||
+        scoreableObject.submittableType === 'account_bounty' &&
+        scoreableObject.submittableType === 'account_objective' &&
         scoreableObject.submittableType === 'character_objective'
     )
 
