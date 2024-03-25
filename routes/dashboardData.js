@@ -95,9 +95,18 @@ router.get('/team-comparison', async (req, res) => {
 router.get('/leader-board', async (req, res) => {
   console.log('fetching leaderboard')
   const users = await User.query()
-  const scoringEvents = await ScoringEvent.query()
+  let scoringEvents = await ScoringEvent.query()
     .where('is_approved', true)
     .withGraphFetched('[scoreableObject,league]')
+
+  // filter scoring events to only consider account_bounty, account_objective or character objectives
+  scoringEvents = scoringEvents.filter(
+    event =>
+      event.scoreableObject.submittableType === 'account_bounty' ||
+      event.scoreableObject.submittableType === 'account_objective' ||
+      event.scoreableObject.submittableType === 'character_objective'
+  )
+
   const teams = await Team.query()
   const userScores = []
   for (const user of users) {
