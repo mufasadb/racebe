@@ -99,6 +99,9 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((id, done) => {
+  if (!id) {
+    error('no id')
+  }
   User.query()
     .findById(id)
     .then(user => {

@@ -72,6 +72,11 @@ router.get('/team-comparison', async (req, res) => {
           if (scoreEvent.createdAt > teamData.mostRecentBounty.claimedAt) {
             teamData.mostRecentBounty.name = scoreEvent.scoreableObject.name
             teamData.mostRecentBounty.claimedAt = scoreEvent.createdAt
+            if (!scoreEvent.userId) {
+              //throw an error
+              console.log('no user id')
+              return res.status(500).send('no user id')
+            }
             const user = await User.query().findById(scoreEvent.userId)
             teamData.mostRecentBounty.username = user.username
             // const ScoreableObject = await ScoreableObject.query().findById(
@@ -81,6 +86,11 @@ router.get('/team-comparison', async (req, res) => {
           }
         }
         if (scoreEvent.createdAt > teamData.mostRecentContributer.claimedAt) {
+          if (!scoreEvent.userId) {
+            //throw an error
+            console.log('no user id')
+            return res.status(500).send('no user id')
+          }
           const user = await User.query().findById(scoreEvent.userId)
           teamData.mostRecentContributer.username = user.username
           teamData.mostRecentContributer.claimedAt = scoreEvent.createdAt

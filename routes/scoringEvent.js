@@ -27,8 +27,6 @@ router.post('/', async (req, res) => {
   if (req.body.scoreable_object_id === null) {
     return res.status(400).json({ message: 'Scoreable Object ID is required' })
   }
-  console.log('tried to make an eveent)')
-
   //when trying to make an event, check the scoreable object type
   // if the scoreable object's type is not league_bounty or team_bounty
   // then make sure it has a user_id
@@ -41,9 +39,11 @@ router.post('/', async (req, res) => {
   const scoreableObject = await ScoreableObject.query().findById(
     req.body.scoreable_object_id
   )
+  if (!scoreableObject) {
+    return res.status(400).json({ message: 'Scoreable Object does not exist' })
+  }
+  let user, team
   try {
-    let user, team
-
     if (req.body.user_id) {
       user = await User.query().findById(req.body.user_id)
     } else {
@@ -62,7 +62,6 @@ router.post('/', async (req, res) => {
     // Handle the error, which could be due to missing IDs or a database issue
     res.status(400).json({ error: error.message })
   }
-
   if (
     scoreableObject.submittableType !== 'league_bounty' &&
     scoreableObject.submittableType !== 'team_bounty'
