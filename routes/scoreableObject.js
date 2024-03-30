@@ -184,7 +184,7 @@ router.get('/available/player-bounties/:id', async (req, res) => {
     )
     const bountiesEvents = scoringEvents.filter(
       scoringEvent =>
-        scoringEvent.scoreableObject.submittableType === 'player_bounty'
+        scoringEvent.scoreableObject.submittableType === 'account_bounty'
     )
 
     const thisPlayersEvents = scoringEvents.filter(
