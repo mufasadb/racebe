@@ -168,11 +168,15 @@ router.get('/available/player-bounties/:id', async (req, res) => {
 
     const playerBounties = await ScoreableObject.query().where(
       'submittableType',
-      'player_bounty'
+      'account_bounty'
     )
     const playerObjectives = await ScoreableObject.query().where(
       'submittableType',
-      'player_objective'
+      'account_objective'
+    )
+    const characterObjectives = await ScoreableObject.query().where(
+      'submittableType',
+      'character_objective'
     )
 
     const scoringEvents = await ScoringEvents.query().withGraphFetched(
