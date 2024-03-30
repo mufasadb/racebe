@@ -98,35 +98,53 @@ router.get('/user/:id', async (req, res) => {
 router.get('/available/team-bounties/:id', async (req, res) => {
   console.log(`get team bounties by ${req.session}`)
   console.log(req.params)
+
+  const teamBounties = await ScoreableObject.query().where(
+    'submittableType',
+    'team_bounty'
+  )
+  const teamObjectives = await ScoreableObject.query().where(
+    'submittableType',
+    'team_objective'
+  )
+
   try {
-    const scoringEvents = await ScoringEvents.query().where(
-      'team_id',
-      req.params.id
+    const scoringEvents = await ScoringEvents.query().withGraphFetched(
+      'scoreableObject'
     )
-    const scoreableObjects = await ScoreableObject.query()
-    const filteredObjects = scoreableObjects.filter(
-      scoreableObject =>
-        scoreableObject.submittableType === 'team_bounty' ||
-        scoreableObject.submittableType === 'team_objective'
+    const bountiesEvents = scoringEvents.filter(
+      scoringEvent =>
+        scoringEvent.scoreableObject.submittableType === 'team_bounty'
     )
 
-    const filteredForThisTeam = filteredObjects.filter(scoreableObject => {
-      return scoringEvents.every(
-        scoringEvent => scoringEvent.scoreableObjectId !== scoreableObject.id
-      )
-    })
+    const thisTeamsEvents = scoringEvents.filter(
+      scoringEvent => scoringEvent.scoreableObject.teamId === req.params.id
+    )
 
-    //if objective is bounty, also check if anyone has submitted this
+    const availableBounties = []
 
-    const allScoringEvents = await ScoringEvents.query()
-
-    const availableBounties = filteredForThisTeam.filter(scoreableObject => {
-      return allScoringEvents.every(
-        scoringEvent =>
-          scoringEvent.scoreableObjectId !== scoreableObject.id ||
-          scoringEvent.submittableType === 'team_objective'
-      )
-    })
+    for (bountySObjects of teamBounties) {
+      let found = false
+      for (teamEVent of bountiesEvents) {
+        if (bountySObjects.id === teamEVent.scoreableObjectId) {
+          found = true
+        }
+      }
+      if (!found) {
+        availableBounties.push(bountySObjects)
+      }
+    }
+    for (teamObjective of teamObjectives) {
+      let found = false
+      for (teamEVent of thisTeamsEvents) {
+        if (teamObjective.id === teamEVent.scoreableObjectId) {
+          found = true
+        }
+      }
+      if (!found) {
+        availableBounties.push(teamObjective)
+      }
+    }
 
     const sortedBounties = availableBounties.sort((a, b) => {
       return a.sortOrder - b.sortOrder
@@ -142,36 +160,57 @@ router.get('/available/player-bounties/:id', async (req, res) => {
   console.log(`get user bounties by ${req.session}`)
   console.log(req.params)
   try {
-    const scoringEvents = await ScoringEvents.query().where(
-      'user_id',
-      req.params.id
+    //get scoringEvents by type bounty
+    //get scoringEvents  from this user
+    // get objectives that are character_objectives, account_objectives and account_bounties
+    //created a list of available bounties which is every character or account objective which hasn't been done
+    // by this user, + and account_bounties which haven't been done by anyone
+
+    const playerBounties = await ScoreableObject.query().where(
+      'submittableType',
+      'player_bounty'
+    )
+    const playerObjectives = await ScoreableObject.query().where(
+      'submittableType',
+      'player_objective'
     )
 
-    // get scoreable objects where submittable type is account_bounty, account_objective, or character_objective
-    const scoreableObjects = await ScoreableObject.query()
-
-    const filteredObjects = scoreableObjects.filter(
-      scoreableObject =>
-        scoreableObject.submittableType === 'account_bounty' ||
-        scoreableObject.submittableType === 'account_objective' ||
-        scoreableObject.submittableType === 'character_objective'
+    const scoringEvents = await ScoringEvents.query().withGraphFetched(
+      'scoreableObject'
+    )
+    const bountiesEvents = scoringEvents.filter(
+      scoringEvent =>
+        scoringEvent.scoreableObject.submittableType === 'player_bounty'
     )
 
-    const filteredForThisUser = filteredObjects.filter(scoreableObject => {
-      return scoringEvents.every(
-        scoringEvent => scoringEvent.scoreableObjectId !== scoreableObject.id
-      )
-    })
+    const thisPlayersEvents = scoringEvents.filter(
+      scoringEvent => scoringEvent.scoreableObject.userId === req.params.id
+    )
 
-    const allScoringEvents = await ScoringEvents.query()
-    const availableBounties = filteredForThisUser.filter(scoreableObject => {
-      return allScoringEvents.every(
-        scoringEvent =>
-          scoringEvent.scoreableObjectId !== scoreableObject.id ||
-          scoringEvent.submittableType === 'account_objective' ||
-          scoringEvent.submittableType === 'character_objective'
-      )
-    })
+    const availableBounties = []
+
+    for (bountySObjects of playerBounties) {
+      let found = false
+      for (playerEVent of bountiesEvents) {
+        if (bountySObjects.id === playerEVent.scoreableObjectId) {
+          found = true
+        }
+      }
+      if (!found) {
+        availableBounties.push(bountySObjects)
+      }
+    }
+    for (playerObjective of playerObjectives) {
+      let found = false
+      for (playerEVent of thisPlayersEvents) {
+        if (playerObjective.id === playerEVent.scoreableObjectId) {
+          found = true
+        }
+      }
+      if (!found) {
+        availableBounties.push(playerObjective)
+      }
+    }
 
     const sortedBounties = availableBounties.sort((a, b) => {
       return a.sortOrder - b.sortOrder
