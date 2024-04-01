@@ -188,8 +188,8 @@ router.get('/available/player-bounties/:id', async (req, res) => {
     )
 
     const thisPlayersEvents = scoringEvents.filter(
-      scoringEvent => scoringEvent.userId === req.params.id
-    )
+      scoringEvent => scoringEvent.userId == req.params.id
+    )  
 
     const availableBounties = []
 
