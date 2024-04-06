@@ -47,7 +47,7 @@ const cookie = {
   secure: process.env.ENVIRONMENT === 'production' ? true : false,
   maxAge: 1000 * 60 * 60 * 24,
   domain:
-    process.env.ENVIRONMENT === 'production' ? '.ace-olympics.duckdns.org' : 'localhost'
+    process.env.ENVIRONMENT === 'production' ? 'ace-olympics.duckdns.org' : 'localhost'
 }
 if (process.env.ENVIRONMENT === 'production') {
   cookie.sameSite = 'None'
